@@ -127,27 +127,30 @@ public class ShowTypeActivity extends SuperActivity {
         showList = (RefreshListView) findViewById(R.id.showList);
 
 
-        mViewMiddle = new ViewMiddle(this){
+        mViewMiddle = new ViewMiddle(this) {
             @Override
             public void initData(ArrayList<String> groups, SparseArray<LinkedList<String>> children) {
                 JSONArray array = CityTool.findAreaAndStreet(cityStr);
-                for (int i = 0; i <array.length() ; i++) {
+                groups.add("全" + cityStr);
+                children.append(0, new LinkedList<String>());
+                for (int i = 0; i < array.length(); i++) {
                     JSONObject area = array.optJSONObject(i);
                     groups.add(area.optString("county"));
                     LinkedList<String> streets = new LinkedList<String>();
+                    streets.add("全" + area.optString("county"));
                     JSONArray streetArray = area.optJSONArray("streets");
                     for (int j = 0; j < streetArray.length(); j++) {
                         streets.add(streetArray.optString(j));
                     }
-                    children.append(i,streets);
+                    children.append(i+1, streets);
                 }
             }
         };
 
 
         mTabs.add(mViewMiddle);
-        ArrayList<String> titles= new ArrayList<>();
-        titles.add("区域");
+        ArrayList<String> titles = new ArrayList<>();
+        titles.add("选择区域");
         mTabView.setValue(titles, mTabs);
     }
 
@@ -165,7 +168,7 @@ public class ShowTypeActivity extends SuperActivity {
         mViewMiddle.setOnSelectListener(new ViewMiddle.OnSelectListener() {
             @Override
             public void getValue(String showText) {
-                onRefresh(mViewMiddle,showText);
+                onRefresh(mViewMiddle, showText);
             }
         });
 
@@ -516,7 +519,7 @@ public class ShowTypeActivity extends SuperActivity {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if(!mTabView.onPressBack()){
+            if (!mTabView.onPressBack()) {
                 activityFinish();
             }
         }

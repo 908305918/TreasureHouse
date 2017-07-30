@@ -24,7 +24,7 @@ public class ViewMiddle extends LinearLayout implements ViewBaseAction {
     private TextAdapter plateListViewAdapter;
     private TextAdapter earaListViewAdapter;
     private OnSelectListener mOnSelectListener;
-    private int tEaraPosition = 0;
+    private int tEaraPosition = 1;
     private int tBlockPosition = 0;
     private String showString = "不限";
 
@@ -98,7 +98,7 @@ public class ViewMiddle extends LinearLayout implements ViewBaseAction {
         if (tEaraPosition < children.size())
             childrenItem.addAll(children.get(tEaraPosition));
         plateListViewAdapter = new TextAdapter(context, childrenItem,
-                R.drawable.choose_item_right,
+                R.drawable.choose_plate_item_selector,
                 R.drawable.choose_plate_item_selector);
         plateListViewAdapter.setTextSize(15);
         plateListViewAdapter.setSelectedPositionNoNotify(tBlockPosition);
@@ -140,7 +140,7 @@ public class ViewMiddle extends LinearLayout implements ViewBaseAction {
     }
 
     public void setDefaultSelect() {
-        regionListView.setSelection(tEaraPosition);
+        regionListView.setSelection(tEaraPosition-1);
         plateListView.setSelection(tBlockPosition);
     }
 

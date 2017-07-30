@@ -54,6 +54,6 @@
     <string name="mis_permission_rationale">浏览图片需要您提供浏览存储的权限</string>
     <string name="mis_permission_rationale_write_storage">保存拍照图片需要您提供写存储权限</string>
 
-    <string name="no_data">没有找到符合条件的房源</string>
+    <string name="no_data">没有找到符合条件的数据</string>
 
 </resources>
