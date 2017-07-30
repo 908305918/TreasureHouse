@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.util.SparseArray;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +19,7 @@ import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
+import android.widget.Toast;
 
 import com.example.treasurehouse.R;
 import com.zizoy.treasurehouse.adapter.MyspinnerAdapter;
@@ -25,12 +27,17 @@ import com.zizoy.treasurehouse.adapter.ShowTypeAdapter;
 import com.zizoy.treasurehouse.api.MApplication;
 import com.zizoy.treasurehouse.base.SuperActivity;
 import com.zizoy.treasurehouse.bean.AjaxParamsBean;
+import com.zizoy.treasurehouse.util.CityTool;
 import com.zizoy.treasurehouse.util.ClearEditText;
 import com.zizoy.treasurehouse.util.JsonUtil;
 import com.zizoy.treasurehouse.util.PreferencesUtils;
 import com.zizoy.treasurehouse.util.RefreshListView;
 import com.zizoy.treasurehouse.util.RefreshListViewListener;
 import com.zizoy.treasurehouse.util.ToastUtil;
+import com.zizoy.treasurehouse.widget.expandtab.ExpandTabView;
+import com.zizoy.treasurehouse.widget.expandtab.ViewLeft;
+import com.zizoy.treasurehouse.widget.expandtab.ViewMiddle;
+import com.zizoy.treasurehouse.widget.expandtab.ViewRight;
 import com.zizoy.xutils.exception.HttpException;
 import com.zizoy.xutils.http.RequestParams;
 import com.zizoy.xutils.http.ResponseInfo;
@@ -38,9 +45,11 @@ import com.zizoy.xutils.http.callback.RequestCallBack;
 import com.zizoy.xutils.http.client.HttpRequest;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -57,6 +66,11 @@ public class ShowTypeActivity extends SuperActivity {
     private ClearEditText searchEt;
     private Button searchBtn;
     private MyspinnerAdapter regionadapter;
+
+    private ExpandTabView mTabView;
+    private ArrayList<View> mTabs = new ArrayList<>();
+    private ViewMiddle mViewMiddle;
+
 
     private RefreshListView showList;
     private ShowTypeAdapter mAdapter;
@@ -109,7 +123,32 @@ public class ShowTypeActivity extends SuperActivity {
         gotoTv = (TextView) findViewById(R.id.tv_goto);
         searchEt = (ClearEditText) findViewById(R.id.et_search);
         searchBtn = (Button) findViewById(R.id.btn_Search);
+        mTabView = (ExpandTabView) findViewById(R.id.expandtab_view);
         showList = (RefreshListView) findViewById(R.id.showList);
+
+
+        mViewMiddle = new ViewMiddle(this){
+            @Override
+            public void initData(ArrayList<String> groups, SparseArray<LinkedList<String>> children) {
+                JSONArray array = CityTool.findAreaAndStreet(cityStr);
+                for (int i = 0; i <array.length() ; i++) {
+                    JSONObject area = array.optJSONObject(i);
+                    groups.add(area.optString("county"));
+                    LinkedList<String> streets = new LinkedList<String>();
+                    JSONArray streetArray = area.optJSONArray("streets");
+                    for (int j = 0; j < streetArray.length(); j++) {
+                        streets.add(streetArray.optString(j));
+                    }
+                    children.append(i,streets);
+                }
+            }
+        };
+
+
+        mTabs.add(mViewMiddle);
+        ArrayList<String> titles= new ArrayList<>();
+        titles.add("区域");
+        mTabView.setValue(titles, mTabs);
     }
 
     @Override
@@ -122,6 +161,32 @@ public class ShowTypeActivity extends SuperActivity {
         showList.setonRefreshListener(mRefreshLoad);
         showList.setOnItemClickListener(showsClick);
         searchEt.setOnEditorActionListener(searchListener);
+
+        mViewMiddle.setOnSelectListener(new ViewMiddle.OnSelectListener() {
+            @Override
+            public void getValue(String showText) {
+                onRefresh(mViewMiddle,showText);
+            }
+        });
+
+    }
+
+    private void onRefresh(View view, String showText) {
+        mTabView.onPressBack();
+        int position = getPosition(view);
+        if (position >= 0 && !mTabView.getTitle(position).equals(showText)) {
+            mTabView.setTitle(showText, position);
+        }
+        Toast.makeText(ShowTypeActivity.this, showText, Toast.LENGTH_SHORT).show();
+    }
+
+    private int getPosition(View tView) {
+        for (int i = 0; i < mTabs.size(); i++) {
+            if (mTabs.get(i) == tView) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     @Override
@@ -218,7 +283,8 @@ public class ShowTypeActivity extends SuperActivity {
                     showWindow(searchBtn, searchBtn);
                     break;
 
-                default: break;
+                default:
+                    break;
             }
         }
     };
@@ -450,7 +516,9 @@ public class ShowTypeActivity extends SuperActivity {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            activityFinish();
+            if(!mTabView.onPressBack()){
+                activityFinish();
+            }
         }
         return true;
     }

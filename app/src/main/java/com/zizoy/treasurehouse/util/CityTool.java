@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author falcon
@@ -115,6 +116,19 @@ public class CityTool {
         citys.add(city4); citys.add(city5); citys.add(city6);
 
         return citys;
+    }
+
+
+    public static JSONArray findAreaAndStreet(String cityName){
+        try {
+            String citys = readRawFile(R.raw.city_map);
+            JSONObject jsonObject = new JSONObject(citys);
+            JSONArray areaArray = jsonObject.optJSONArray(cityName);
+            return areaArray;
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return null;
     }
 
     /**

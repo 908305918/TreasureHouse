@@ -58,6 +58,13 @@
                 android:textColor="#ff000000" />
         </LinearLayout>
 
+        <com.zizoy.treasurehouse.widget.expandtab.ExpandTabView
+            android:id="@+id/expandtab_view"
+            android:layout_width="fill_parent"
+            android:layout_height="40dp"
+            android:paddingLeft="10dip"
+            android:paddingRight="10dp" android:background="@color/white" />
+
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
