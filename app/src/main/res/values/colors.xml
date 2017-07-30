@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#ff606060</color>
+    <color name="tv_black">#9b9b9b</color>
+    <color name="red">#D31400</color>
+    <color name="yellow">#fff100</color>
+    <color name="main_bg">#eeeeee</color>
+    <color name="tabbar_norm">#707070</color>
+    <color name="tabbar_selected">#4788e0</color>
+    <color name="gray_divider">#ffdddee0</color>
+    <color name="tabbar_divider">#cecece</color>
+    <color name="step_done">#fb4040</color>
+    <color name="login_line">#1ca794</color>
+    <color name="tv_main_color">#252525</color>
+    <color name="title_left_background_click">#33000000</color>
+    <color name="title_left_background_normal">@android:color/transparent</color>
+    <color name="deep_gray">#ff505050</color>
+    <color name="money">#fb4040</color>
+    <color name="mis_actionbar_color">#21282C</color>
+</resources>

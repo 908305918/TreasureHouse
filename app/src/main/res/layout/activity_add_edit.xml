@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/main_bg"
+    android:orientation="vertical">
+
+    <include layout="@layout/view_head" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@null">
+
+        <com.zizoy.treasurehouse.util.VerticalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@null"
+            android:scrollbars="none">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:orientation="vertical">
+
+                <FrameLayout
+                    android:id="@+id/ll_photo"
+                    android:layout_width="match_parent"
+                    android:layout_height="230dp"
+                    android:background="@color/white">
+
+                    <com.zizoy.treasurehouse.util.ViewFlow
+                        android:id="@+id/gwzpGallery"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom"
+                        android:background="#88252525"
+                        android:gravity="center"
+                        android:padding="3dp"
+                        android:visibility="gone">
+
+                        <com.zizoy.treasurehouse.util.CircleFlowIndicator
+                            android:id="@+id/gwzpFlowindic"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal|bottom"
+                            android:padding="3dip"
+                            app:activeColor="#316cbb"
+                            app:activeType="fill"
+                            app:circleSeparation="20dip"
+                            app:inactiveColor="#ffffff"
+                            app:inactiveType="fill"
+                            app:radius="5dip" />
+                    </LinearLayout>
+                </FrameLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.10dp"
+                    android:layout_marginTop="8dp"
+                    android:background="#dadada" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="45dp"
+                        android:background="@null"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingLeft="16dp"
+                        android:paddingRight="16dp">
+
+                        <com.zizoy.treasurehouse.util.ClearEditText
+                            android:id="@+id/et_name"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@null"
+                            android:hint="请输入要发布的标题"
+                            android:imeOptions="actionDone"
+                            android:lines="1"
+                            android:textColor="@color/black"
+                            android:textColorHint="#ccc"
+                            android:textSize="15sp" />
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.10dp"
+                        android:background="#dadada" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="45dp"
+                        android:background="@null"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingLeft="16dp"
+                        android:paddingRight="16dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:text="价格： "
+                            android:textColor="@color/black"
+                            android:textSize="15sp" />
+
+                        <com.zizoy.treasurehouse.util.ClearEditText
+                            android:id="@+id/et_price"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="5dp"
+                            android:layout_weight="1"
+                            android:background="@null"
+                            android:hint="请输入您的价格"
+                            android:imeOptions="actionDone"
+                            android:lines="1"
+                            android:textColor="@color/black"
+                            android:textColorHint="#ccc"
+                            android:textSize="15sp" />
+
+                        <TextView
+                            android:layout_width="20dp"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:text="元"
+                            android:textColor="@color/red"
+                            android:textSize="15sp" />
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.10dp"
+                        android:background="#dadada" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="45dp"
+                        android:background="@null"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingLeft="16dp"
+                        android:paddingRight="16dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:text="姓名： "
+                            android:textColor="@color/black"
+                            android:textSize="15sp" />
+
+                        <com.zizoy.treasurehouse.util.ClearEditText
+                            android:id="@+id/et_user"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="5dp"
+                            android:layout_weight="1"
+                            android:background="@null"
+                            android:hint="请输入您的姓名"
+                            android:imeOptions="actionDone"
+                            android:lines="1"
+                            android:textColor="@color/black"
+                            android:textColorHint="#ccc"
+                            android:textSize="15sp" />
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.10dp"
+                        android:background="#dadada" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="45dp"
+                        android:background="@null"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingLeft="16dp"
+                        android:paddingRight="16dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:text="电话： "
+                            android:textColor="@color/black"
+                            android:textSize="15sp" />
+
+                        <com.zizoy.treasurehouse.util.ClearEditText
+                            android:id="@+id/et_phone"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="5dp"
+                            android:layout_weight="1"
+                            android:background="@null"
+                            android:hint="请输入您的电话"
+                            android:imeOptions="actionDone"
+                            android:lines="1"
+                            android:textColor="@color/black"
+                            android:textColorHint="#ccc"
+                            android:textSize="15sp" />
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.10dp"
+                        android:background="#dadada" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="45dp"
+                        android:background="@null"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingLeft="16dp"
+                        android:paddingRight="16dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:text="地址： "
+                            android:textColor="@color/black"
+                            android:textSize="15sp" />
+
+                        <com.zizoy.treasurehouse.util.ClearEditText
+                            android:id="@+id/et_address"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="5dp"
+                            android:layout_weight="1"
+                            android:background="@null"
+                            android:hint="请输入您的地址"
+                            android:imeOptions="actionDone"
+                            android:singleLine="true"
+                            android:textColor="@color/black"
+                            android:textColorHint="#ccc"
+                            android:textSize="15sp" />
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.10dp"
+                        android:background="#dadada" />
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="8dp"
+                    android:gravity="center_vertical"
+                    android:text="填写内容"
+                    android:textColor="@color/black"
+                    android:textSize="15sp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.10dp"
+                    android:background="#dadada" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:orientation="vertical">
+
+                    <EditText
+                        android:id="@+id/et_note"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="16dp"
+                        android:layout_marginTop="10dp"
+                        android:background="@null"
+                        android:gravity="top"
+                        android:hint="至少10字，如房屋，请填写区域，户型，面积，等基本信息"
+                        android:imeOptions="actionDone"
+                        android:minHeight="50dp"
+                        android:minLines="6"
+                        android:textColor="@color/black"
+                        android:textColorHint="#ccc"
+                        android:textSize="16sp" />
+
+                    <com.zizoy.treasurehouse.util.GridViewUtil
+                        android:id="@+id/gv_photos"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="12dp"
+                        android:horizontalSpacing="12dp"
+                        android:listSelector="@android:color/transparent"
+                        android:numColumns="4"
+                        android:scrollbars="none"
+                        android:verticalSpacing="12dp" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.10dp"
+                        android:background="#dadada" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="70dp"
+                    android:background="@null" />
+            </LinearLayout>
+        </com.zizoy.treasurehouse.util.VerticalScrollView>
+    </LinearLayout>
+</LinearLayout>

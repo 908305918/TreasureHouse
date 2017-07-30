@@ -1,0 +1,57 @@
+<resources>
+    <string name="app_name">置换空间</string>
+    <string name="title_btn_back">返回</string>
+    <string name="title_btn_goto">设置</string>
+    <string name="main_home">首&#160;&#160;页</string>
+    <string name="main_find">发&#160;&#160;现</string>
+    <string name="main_bbs">交&#160;&#160;流</string>
+    <string name="main_personal">我&#160;&#160;的</string>
+    <string name="tv_rjgx">软件更新</string>
+    <string name="updateEnterBtn">确定</string>
+    <string name="updateCancelBtn">取消</string>
+    <string name="updateForceBtn">更新</string>
+    <string name="btn_login">立即登录</string>
+    <string name="tv_getPwd">忘记密码？</string>
+    <string name="submit">提&#160;&#160;交</string>
+    <string name="about_version">版本： 1.0</string>
+    <string name="aboutApp">\t\t行星行是基于云计算的一种高效、便捷、低成本的在线停车系统，借助移动信息化技术，搭建综合停车服务平台，实现用户线上预约停车，线下停车取车等综合为一体的综合服务平台，为用户停车取车提供高效、便捷的停车服务桥梁。</string>
+    <string name="copyright">技术支持：至卓信息科技有限公司</string>
+    <string name="user_type_yh">用户</string>
+    <string name="user_type_qy">企业</string>
+    <string name="user_type_sgd">施工队</string>
+    <string name="user_type_zjs">造价师</string>
+    <string name="login_or_register">登录/注册</string>
+    <string name="btn_pay">充 值</string>
+    <string name="personal_userChange">切换账户</string>
+    <string name="personal_changePwd">修改密码</string>
+    <string name="personal_opinion">投诉建议</string>
+    <string name="personal_record">历史记录</string>
+    <string name="personal_update">检查更新</string>
+    <string name="personal_version">当前版本：1.0</string>
+    <string name="personal_about">关于我们</string>
+    <string name="xlistview_header_hint_normal">下拉刷新</string>
+    <string name="xlistview_header_hint_ready">松开刷新数据</string>
+    <string name="xlistview_header_hint_loading">正在加载...</string>
+    <string name="xlistview_header_last_time">上次更新时间：</string>
+    <string name="xlistview_footer_hint_normal">点击查看更多</string>
+    <string name="xlistview_footer_hint_over">没有更多内容</string>
+    <string name="xlistview_footer_hint_ready">松开载入更多</string>
+    <string name="viewpager_indicator">%1$d/%2$d</string>
+
+    <string name="mis_folder_all">所有照片</string>
+    <string name="mis_preview">预览</string>
+    <string name="mis_msg_no_camera">没有系统相机</string>
+    <string name="mis_msg_amount_limit">已经达到最高选择数量</string>
+    <string name="mis_action_done">完成</string>
+    <string name="mis_photo_unit">张</string>
+    <string name="mis_tip_take_photo">拍摄照片</string>
+    <string name="mis_error_image_not_exist">图片错误</string>
+    <string name="mis_error_no_permission">无权限</string>
+    <string name="mis_permission_dialog_title">权限拒绝</string>
+    <string name="mis_permission_dialog_ok">好</string>
+    <string name="mis_permission_dialog_cancel">拒绝</string>
+    <string name="mis_action_button_string">%1$s(%2$d/%3$d)</string>
+    <string name="mis_permission_rationale">浏览图片需要您提供浏览存储的权限</string>
+    <string name="mis_permission_rationale_write_storage">保存拍照图片需要您提供写存储权限</string>
+
+</resources>
