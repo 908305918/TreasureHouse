@@ -26,7 +26,9 @@ public class ViewMiddle extends LinearLayout implements ViewBaseAction {
     private OnSelectListener mOnSelectListener;
     private int tEaraPosition = 1;
     private int tBlockPosition = 0;
-    private String showString = "不限";
+    private String area = "";
+    private String showString = "";
+
 
     public ViewMiddle(Context context) {
         super(context);
@@ -85,12 +87,13 @@ public class ViewMiddle extends LinearLayout implements ViewBaseAction {
 
                     @Override
                     public void onItemClick(View view, int position) {
+                        area = groups.get(position);
                         if (position < children.size()) {
                             childrenItem.clear();
                             childrenItem.addAll(children.get(position));
                             plateListViewAdapter.notifyDataSetChanged();
                             if (childrenItem.size() == 0 && mOnSelectListener != null) {
-                                mOnSelectListener.getValue(groups.get(position));
+                                mOnSelectListener.getValue(area);
                             }
                         }
                     }
@@ -111,8 +114,7 @@ public class ViewMiddle extends LinearLayout implements ViewBaseAction {
 
                         showString = childrenItem.get(position);
                         if (mOnSelectListener != null) {
-
-                            mOnSelectListener.getValue(showString);
+                            mOnSelectListener.getValue(area+";"+showString);
                         }
 
                     }

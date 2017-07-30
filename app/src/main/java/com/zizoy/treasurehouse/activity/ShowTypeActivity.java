@@ -82,6 +82,8 @@ public class ShowTypeActivity extends SuperActivity {
     private String userId = null;
     private String cityStr = null;
     private String typeStr = null;
+    private String districtStr = "";
+    private String streetStr = "";
 
     private int curPage = 1; // 当前页数
     private int totalPage = 0; // 总数量
@@ -142,7 +144,7 @@ public class ShowTypeActivity extends SuperActivity {
                     for (int j = 0; j < streetArray.length(); j++) {
                         streets.add(streetArray.optString(j));
                     }
-                    children.append(i+1, streets);
+                    children.append(i + 1, streets);
                 }
             }
         };
@@ -180,7 +182,15 @@ public class ShowTypeActivity extends SuperActivity {
         if (position >= 0 && !mTabView.getTitle(position).equals(showText)) {
             mTabView.setTitle(showText, position);
         }
-        Toast.makeText(ShowTypeActivity.this, showText, Toast.LENGTH_SHORT).show();
+        String[] address = showText.split(";");
+        if(address.length==1){
+            districtStr = address[0].contains("全")?"":address[0];
+        }
+        if(address.length==2){
+            districtStr = address[0].contains("全")?"":address[0];
+            streetStr = address[1].contains("全")?"":address[1];
+        }
+        Toast.makeText(ShowTypeActivity.this, districtStr+"=="+streetStr, Toast.LENGTH_SHORT).show();
     }
 
     private int getPosition(View tView) {
@@ -492,6 +502,45 @@ public class ShowTypeActivity extends SuperActivity {
             dialogUtil.showNetworkDialog(); // 显示提示界面
         }
     }
+
+    private void findDataByAddress(final boolean isTrue) {
+        if (checkNet.checkNet()) {
+            RequestParams params = new RequestParams();
+            params.addBodyParameter("city", cityStr);
+            params.addBodyParameter("district", districtStr);
+            params.addBodyParameter("street", streetStr);
+            httpUtils.send(HttpRequest.HttpMethod.POST, showPath, params, new RequestCallBack<String>() {
+                @Override
+                public void onStart() {
+                    super.onStart();
+                    if(isTrue){
+                        dialogUtil.showLoadDialog();
+                    }
+                }
+
+                @Override
+                public void onSuccess(ResponseInfo<String> responseInfo) {
+                    if (isTrue) {
+                        dialogUtil.closeDialog();
+                    }
+                }
+
+                @Override
+                public void onFailure(HttpException e, String s) {
+                    if (isTrue) {
+                        dialogUtil.closeDialog();
+                    }
+                    ToastUtil.showMessage(activity, "网络异常！");
+                    showList.stopRefresh();
+                    showList.stopLoadMore();
+                    listType = 0;
+                }
+            });
+        } else {
+            dialogUtil.showNetworkDialog(); // 显示提示界面
+        }
+    }
+
 
     /**
      * 获取返回参数
