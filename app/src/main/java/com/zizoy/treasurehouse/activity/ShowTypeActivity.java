@@ -508,77 +508,21 @@ public class ShowTypeActivity extends SuperActivity {
         }
     }
 
-    private void findDataByAddress(final boolean isTrue) {
-        if (checkNet.checkNet()) {
-            RequestParams params = new RequestParams();
-            params.addBodyParameter("city", cityStr);
-            params.addBodyParameter("district", districtStr);
-            params.addBodyParameter("street", streetStr);
-            httpUtils.send(HttpRequest.HttpMethod.POST, showPath, params, new RequestCallBack<String>() {
-                @Override
-                public void onStart() {
-                    super.onStart();
-                    if (isTrue) {
-                        dialogUtil.showLoadDialog();
-                    }
-                }
-
-                @Override
-                public void onSuccess(ResponseInfo<String> responseInfo) {
-                    if (isTrue) {
-                        dialogUtil.closeDialog();
-                    }
-                    showList.stopRefresh();
-                    showList.stopLoadMore();
-                }
-
-                @Override
-                public void onFailure(HttpException e, String s) {
-                    if (isTrue) {
-                        dialogUtil.closeDialog();
-                    }
-                    ToastUtil.showMessage(activity, "网络异常！");
-                    showList.stopRefresh();
-                    showList.stopLoadMore();
-                    listType = 0;
-                }
-            });
-        } else {
-            dialogUtil.showNetworkDialog(); // 显示提示界面
-        }
-    }
-
-
-    /**
-     * 获取返回参数
-     */
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode != RESULT_OK)
-            return;
-
-        switch (requestCode) {
-            case 1:
-                curPage = 1;
-                listType = 1;
-                getShowDate(searchEt.getText().toString().trim(), searchBtn.getText().toString().trim(), false, isChooseAddr);
-                break;
-
-            default:
-                break;
-        }
-    }
-
     /**
      * 按系统键返回
      */
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if (!mTabView.onPressBack()) {
-                activityFinish();
-            }
+            activityFinish();
         }
         return true;
+    }
+
+    @Override
+    protected void activityFinish() {
+        if (!mTabView.onPressBack()) {
+            super.activityFinish();
+        }
     }
 }
