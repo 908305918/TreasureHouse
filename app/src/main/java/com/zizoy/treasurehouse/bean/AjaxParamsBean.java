@@ -16,6 +16,8 @@ public class AjaxParamsBean {
     private String latitude;
     private String longitude;
     private String city;
+    private String district;
+    private String street;
 
     private  String pid;
     private String title;
@@ -184,5 +186,21 @@ public class AjaxParamsBean {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getDistrict() {
+        return district;
+    }
+
+    public void setDistrict(String district) {
+        this.district = district;
+    }
+
+    public String getStreet() {
+        return street;
+    }
+
+    public void setStreet(String street) {
+        this.street = street;
     }
 }

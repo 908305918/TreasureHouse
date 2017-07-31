@@ -84,6 +84,7 @@ public class ShowTypeActivity extends SuperActivity {
     private String typeStr = null;
     private String districtStr = "";
     private String streetStr = "";
+    private boolean isChooseAddr = false;
 
     private int curPage = 1; // 当前页数
     private int totalPage = 0; // 总数量
@@ -182,15 +183,18 @@ public class ShowTypeActivity extends SuperActivity {
         if (position >= 0 && !mTabView.getTitle(position).equals(showText)) {
             mTabView.setTitle(showText, position);
         }
-        String[] address = showText.split(";");
-        if(address.length==1){
-            districtStr = address[0].contains("全")?"":address[0];
+        String[] address = showText.split("-");
+        if (address.length == 1) {
+            districtStr = address[0].contains("全") ? "" : address[0];
         }
-        if(address.length==2){
-            districtStr = address[0].contains("全")?"":address[0];
-            streetStr = address[1].contains("全")?"":address[1];
+        if (address.length == 2) {
+            districtStr = address[0].contains("全") ? "" : address[0];
+            streetStr = address[1].contains("全") ? "" : address[1];
         }
-        Toast.makeText(ShowTypeActivity.this, districtStr+"=="+streetStr, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(ShowTypeActivity.this, districtStr + "==" + streetStr, Toast.LENGTH_SHORT).show();
+        curPage = 1;
+        listType = 1;
+        getShowDate("", searchBtn.getText().toString().trim(), true, true);
     }
 
     private int getPosition(View tView) {
@@ -267,7 +271,7 @@ public class ShowTypeActivity extends SuperActivity {
         }
         regionadapter = new MyspinnerAdapter(this, listTemp);
         searchBtn.setText((CharSequence) regionadapter.getItem(0));
-        getShowDate(searchEt.getText().toString().trim(), searchBtn.getText().toString().trim(), true); // 获取展示数据
+        getShowDate(searchEt.getText().toString().trim(), searchBtn.getText().toString().trim(), true, isChooseAddr); // 获取展示数据
     }
 
     /**
@@ -313,7 +317,7 @@ public class ShowTypeActivity extends SuperActivity {
             Map<String, String> map = mAdapter.getListData().get((int) id);
             bundle.putString("id", map.get("pid"));
 
-            startActivityForResult(ShowDetailActivity.class, bundle, 1);
+            startActivity(ShowDetailActivity.class, bundle);
             overridePendingTransition(R.anim.left_in, R.anim.left_out);
         }
     };
@@ -327,7 +331,8 @@ public class ShowTypeActivity extends SuperActivity {
             if ((actionId == 0 || actionId == 3) && event != null) {
                 curPage = 1;
                 listType = 1;
-                getShowDate(searchEt.getText().toString().trim(), searchBtn.getText().toString().trim(), false);
+                isChooseAddr = false;
+                getShowDate(searchEt.getText().toString().trim(), searchBtn.getText().toString().trim(), false, isChooseAddr);
 
                 ((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE))
                         .hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
@@ -345,14 +350,14 @@ public class ShowTypeActivity extends SuperActivity {
         public void onRefresh() {
             curPage = 1;
             listType = 1;
-            getShowDate(searchEt.getText().toString().trim(), searchBtn.getText().toString().trim(), false);
+            getShowDate(searchEt.getText().toString().trim(), searchBtn.getText().toString().trim(), false, isChooseAddr);
         }
 
         @Override
         public void onLoadMore() {
             curPage++;
             listType = 2;
-            getShowDate(searchEt.getText().toString().trim(), searchBtn.getText().toString().trim(), false);
+            getShowDate(searchEt.getText().toString().trim(), searchBtn.getText().toString().trim(), false, isChooseAddr);
         }
     };
 
@@ -384,7 +389,8 @@ public class ShowTypeActivity extends SuperActivity {
                 popupWindow = null;
                 curPage = 1;
                 listType = 1;
-                getShowDate(searchEt.getText().toString().trim(), searchBtn.getText().toString().trim(), false);
+                isChooseAddr = false;
+                getShowDate(searchEt.getText().toString().trim(), searchBtn.getText().toString().trim(), false, isChooseAddr);
             }
         });
     }
@@ -392,7 +398,7 @@ public class ShowTypeActivity extends SuperActivity {
     /**
      * 获取展示数据
      */
-    private void getShowDate(final String keyStr, final String typeTwoStr, final boolean isTrue) {
+    private void getShowDate(final String keyStr, final String typeTwoStr, final boolean isTrue, boolean isChooseAddr) {
         if (checkNet.checkNet()) {
             RequestParams params = new RequestParams();
             params.addBodyParameter("jsonpCallback", "jsonpCallback");
@@ -404,100 +410,99 @@ public class ShowTypeActivity extends SuperActivity {
             bean.setPageno(String.valueOf(curPage));
             bean.setPagesize(String.valueOf(pageSize));
             bean.setCity(cityStr);
-
+            if (isChooseAddr) {
+                bean.setDistrict(districtStr);
+                bean.setStreet(streetStr);
+                bean.setKey("");
+            }
             String json = JsonUtil.toJson(bean);
             params.addBodyParameter("jsoninput", json);
 
-            httpUtils.send(HttpRequest.HttpMethod.POST, showPath, params,
-                    new RequestCallBack<String>() {
-                        @Override
-                        public void onStart() {
-                            if (isTrue) {
-                                dialogUtil.showLoadDialog();
+            httpUtils.send(HttpRequest.HttpMethod.POST, showPath, params, new RequestCallBack<String>() {
+                @Override
+                public void onStart() {
+                    if (isTrue) {
+                        dialogUtil.showLoadDialog();
+                    }
+                }
+
+                @Override
+                public void onSuccess(ResponseInfo<String> responseInfo) {
+                    if (isTrue) {
+                        dialogUtil.closeDialog();// 加载成功关闭Dialog
+                    }
+                    showList.stopRefresh();
+                    showList.stopLoadMore();
+
+                    try {
+                        String tempResult = responseInfo.result.split("totalPage=")[0];
+                        String jsonObject = tempResult.substring(14, tempResult.length() - 1);
+                        totalPage = Integer.valueOf(responseInfo.result.split("totalPage=")[1]);
+                        JSONArray jsonArray = new JSONArray(jsonObject);
+                        List<Map<String, String>> datas = new ArrayList<>();
+
+                        if (jsonArray != null && jsonArray.length() > 0) {
+                            for (int i = 0; i < jsonArray.length(); i++) {
+                                Map<String, String> map = new HashMap<>();
+                                map.put("pid", jsonArray.getJSONObject(i).getString("pid"));
+                                map.put("title", jsonArray.getJSONObject(i).getString("title"));
+                                map.put("url", jsonArray.getJSONObject(i).getString("url"));
+                                map.put("price", jsonArray.getJSONObject(i).getString("price"));
+                                map.put("address", jsonArray.getJSONObject(i).getString("address"));
+                                map.put("readernum", jsonArray.getJSONObject(i).getString("readernum"));
+
+                                datas.add(map);
                             }
-                        }
-
-                        @Override
-                        public void onLoading(long total, long current, boolean isUploading) {
-                        }
-
-                        @Override
-                        public void onSuccess(ResponseInfo<String> responseInfo) {
-                            if (isTrue) {
-                                dialogUtil.closeDialog();// 加载成功关闭Dialog
-                            }
-                            showList.stopRefresh();
-                            showList.stopLoadMore();
-
-                            try {
-                                String tempResult = responseInfo.result.split("totalPage=")[0];
-                                String jsonObject = tempResult.substring(14, tempResult.length() - 1);
-                                totalPage = Integer.valueOf(responseInfo.result.split("totalPage=")[1]);
-                                JSONArray jsonArray = new JSONArray(jsonObject);
-                                List<Map<String, String>> datas = new ArrayList<>();
-
-                                if (jsonArray != null && jsonArray.length() > 0) {
-                                    for (int i = 0; i < jsonArray.length(); i++) {
-                                        Map<String, String> map = new HashMap<>();
-                                        map.put("pid", jsonArray.getJSONObject(i).getString("pid"));
-                                        map.put("title", jsonArray.getJSONObject(i).getString("title"));
-                                        map.put("url", jsonArray.getJSONObject(i).getString("url"));
-                                        map.put("price", jsonArray.getJSONObject(i).getString("price"));
-                                        map.put("address", jsonArray.getJSONObject(i).getString("address"));
-                                        map.put("readernum", jsonArray.getJSONObject(i).getString("readernum"));
-
-                                        datas.add(map);
-                                    }
-                                    if (datas.size() > 0) {
-                                        if (1 == listType) {
-                                            dataList.clear();
-                                            dataList.addAll(datas);
-                                            mAdapter.notifyDataSetChanged();
-                                        } else if (2 == listType) {
-                                            datas.remove(0);
-                                            dataList.addAll(datas);
-                                            mAdapter.notifyDataSetChanged();
-                                        } else {
-                                            dataList.addAll(datas);
-                                            mAdapter.notifyDataSetChanged();
-                                        }
-                                        listType = 0;
-                                    }
-                                    if (datas.size() < totalPage) {
-                                        showList.setPullLoadEnable(true);
-                                    } else {
-                                        showList.setPullLoadEnable(false);
-                                    }
+                            if (datas.size() > 0) {
+                                if (1 == listType) {
+                                    dataList.clear();
+                                    dataList.addAll(datas);
+                                    mAdapter.notifyDataSetChanged();
+                                } else if (2 == listType) {
+                                    datas.remove(0);
+                                    dataList.addAll(datas);
+                                    mAdapter.notifyDataSetChanged();
                                 } else {
-                                    ToastUtil.showMessage(activity, "已经到底啦");
-
-                                    showList.setPullLoadEnable(false);
-                                    if (1 == listType) {
-                                        dataList.clear();
-                                        dataList.addAll(datas);
-                                        mAdapter.notifyDataSetChanged();
-                                    } else {
-                                        dataList.addAll(datas);
-                                        mAdapter.notifyDataSetChanged();
-                                    }
-                                    listType = 0;
+                                    dataList.addAll(datas);
+                                    mAdapter.notifyDataSetChanged();
                                 }
-                            } catch (Exception e) {
-                                e.printStackTrace();
+                                listType = 0;
                             }
-                        }
+                            if (datas.size() < totalPage) {
+                                showList.setPullLoadEnable(true);
+                            } else {
+                                showList.setPullLoadEnable(false);
+                            }
+                        } else {
+                            ToastUtil.showMessage(activity, "已经到底啦");
 
-                        @Override
-                        public void onFailure(HttpException error, String msg) {
-                            if (isTrue) {
-                                dialogUtil.closeDialog(); // 加载失败关闭Dialog并提示
+                            showList.setPullLoadEnable(false);
+                            if (1 == listType) {
+                                dataList.clear();
+                                dataList.addAll(datas);
+                                mAdapter.notifyDataSetChanged();
+                            } else {
+                                dataList.addAll(datas);
+                                mAdapter.notifyDataSetChanged();
                             }
-                            ToastUtil.showMessage(activity, "网络异常！");
-                            showList.stopRefresh();
-                            showList.stopLoadMore();
                             listType = 0;
                         }
-                    });
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void onFailure(HttpException error, String msg) {
+                    if (isTrue) {
+                        dialogUtil.closeDialog(); // 加载失败关闭Dialog并提示
+                    }
+                    ToastUtil.showMessage(activity, "网络异常！");
+                    showList.stopRefresh();
+                    showList.stopLoadMore();
+                    listType = 0;
+                }
+            });
         } else {
             dialogUtil.showNetworkDialog(); // 显示提示界面
         }
@@ -513,7 +518,7 @@ public class ShowTypeActivity extends SuperActivity {
                 @Override
                 public void onStart() {
                     super.onStart();
-                    if(isTrue){
+                    if (isTrue) {
                         dialogUtil.showLoadDialog();
                     }
                 }
@@ -523,6 +528,8 @@ public class ShowTypeActivity extends SuperActivity {
                     if (isTrue) {
                         dialogUtil.closeDialog();
                     }
+                    showList.stopRefresh();
+                    showList.stopLoadMore();
                 }
 
                 @Override
@@ -554,7 +561,7 @@ public class ShowTypeActivity extends SuperActivity {
             case 1:
                 curPage = 1;
                 listType = 1;
-                getShowDate(searchEt.getText().toString().trim(), searchBtn.getText().toString().trim(), false);
+                getShowDate(searchEt.getText().toString().trim(), searchBtn.getText().toString().trim(), false, isChooseAddr);
                 break;
 
             default:

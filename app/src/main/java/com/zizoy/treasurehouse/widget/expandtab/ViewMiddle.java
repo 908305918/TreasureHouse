@@ -82,6 +82,7 @@ public class ViewMiddle extends LinearLayout implements ViewBaseAction {
         earaListViewAdapter.setTextSize(17);
         earaListViewAdapter.setSelectedPositionNoNotify(tEaraPosition);
         regionListView.setAdapter(earaListViewAdapter);
+        area = groups.get(tEaraPosition);
         earaListViewAdapter
                 .setOnItemClickListener(new TextAdapter.OnItemClickListener() {
 
@@ -114,7 +115,7 @@ public class ViewMiddle extends LinearLayout implements ViewBaseAction {
 
                         showString = childrenItem.get(position);
                         if (mOnSelectListener != null) {
-                            mOnSelectListener.getValue(area+";"+showString);
+                            mOnSelectListener.getValue(area+"-"+showString);
                         }
 
                     }
