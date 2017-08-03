@@ -11,6 +11,7 @@ import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
+import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -34,9 +35,11 @@ import com.zizoy.treasurehouse.api.MApplication;
 import com.zizoy.treasurehouse.base.SuperActivity;
 import com.zizoy.treasurehouse.bean.AjaxParamsBean;
 import com.zizoy.treasurehouse.takephoto.MultiImageSelector;
+import com.zizoy.treasurehouse.util.CityTool;
 import com.zizoy.treasurehouse.util.ClearEditText;
 import com.zizoy.treasurehouse.util.GridViewUtil;
 import com.zizoy.treasurehouse.util.JsonUtil;
+import com.zizoy.treasurehouse.util.PopViewHelper;
 import com.zizoy.treasurehouse.util.PreferencesUtils;
 import com.zizoy.treasurehouse.util.ToastUtil;
 import com.zizoy.xutils.exception.HttpException;
@@ -44,6 +47,8 @@ import com.zizoy.xutils.http.RequestParams;
 import com.zizoy.xutils.http.ResponseInfo;
 import com.zizoy.xutils.http.callback.RequestCallBack;
 import com.zizoy.xutils.http.client.HttpRequest;
+
+import org.json.JSONArray;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -54,15 +59,14 @@ import java.util.Locale;
 import static com.zizoy.treasurehouse.api.MApplication.filePath;
 
 /**
- * @Description: 程序关于界面
- *
  * @author falcon
+ * @Description: 程序关于界面
  */
 public class ReleaseActivity extends SuperActivity {
     private TextView title;
     private LinearLayout backBtn;
     private LinearLayout gotoBtn;
-    
+
     private TextView typeOne; // 一级类别
     private TextView typeTwo; // 二级类别
     private ClearEditText name; // 标题
@@ -71,6 +75,8 @@ public class ReleaseActivity extends SuperActivity {
     private ClearEditText phone; // 电话
     private ClearEditText address; // 地址
     private LinearLayout city; // 城市
+    private TextView tv_district; // 区域
+    private TextView tv_street; // 街道
     private TextView cityTv;
     private EditText note; // 内容
     private GridViewUtil photos; // 图片
@@ -80,14 +86,18 @@ public class ReleaseActivity extends SuperActivity {
 
     private PopupWindow popupWindow;
 
-    private String userId  = null;
+    private String userId = null;
     private String nameStr = null;
     private String priceStr = null;
     private String userStr = null;
     private String phoneStr = null;
     private String cityStr = null;
+    private String districtStr = null;
+    private String streetStr = null;
     private String noteStr = null;
     private String addressStr = null;
+
+    private JSONArray mStreetArray;
 
     private ArrayList<File> photosPathList = new ArrayList<>(); // 照片地址
     private ArrayList<Bitmap> photosImages = new ArrayList<>(); // 照片地址
@@ -138,6 +148,9 @@ public class ReleaseActivity extends SuperActivity {
         photoBtn = (ImageButton) findViewById(R.id.btn_photoAdd);
         photos = (GridViewUtil) findViewById(R.id.gv_photos);
         addBtn = (Button) findViewById(R.id.btn_releaseAdd);
+        tv_district = (TextView) findViewById(R.id.tv_district);
+        tv_street = (TextView) findViewById(R.id.tv_street);
+
     }
 
     @Override
@@ -201,6 +214,8 @@ public class ReleaseActivity extends SuperActivity {
         price.setOnClickListener(mBtnClick);
         photoBtn.setOnClickListener(mBtnClick);
         addBtn.setOnClickListener(mBtnClick);
+        tv_district.setOnClickListener(mBtnClick);
+        tv_street.setOnClickListener(mBtnClick);
     }
 
     /**
@@ -214,10 +229,10 @@ public class ReleaseActivity extends SuperActivity {
                 case R.id.btn_back: // 界面返回被点击
                     activityFinish();
                     break;
-                    
+
                 case R.id.btn_home: // 回到首页被点击
-                	activityFinish();
-                	break;
+                    activityFinish();
+                    break;
 
                 case R.id.tv_typeOne: // 一级类别被点击
                     showWindowOne(typeOne, typeOne);
@@ -232,6 +247,41 @@ public class ReleaseActivity extends SuperActivity {
                     activity.overridePendingTransition(R.anim.left_in, R.anim.left_out);
                     break;
 
+                case R.id.tv_district: // 区域
+                    cityStr = cityTv.getText().toString().trim();
+                    if (TextUtils.isEmpty(cityStr)) {
+                        ToastUtil.showMessage(activity, "请选择对应的城市！");
+                    } else {
+                        JSONArray array = CityTool.findAreaAndStreet(cityStr);
+                        PopViewHelper dPop = new PopViewHelper(ReleaseActivity.this, tv_district, array, PopViewHelper.TYPE_D);
+                        dPop.setOnPopItemClickListener(new PopViewHelper.OnPopItemClickListener() {
+                            @Override
+                            public void onPopItemClick(int type, String text, JSONArray array) {
+                                districtStr = text;
+                                mStreetArray = array;
+                                streetStr = "";
+                                tv_street.setText("街道");
+                            }
+                        });
+                        dPop.show();
+                    }
+                    break;
+
+                case R.id.tv_street: // 街道
+                    if (TextUtils.isEmpty(districtStr)) {
+                        ToastUtil.showMessage(activity, "请选择对应的区域！");
+                    } else {
+                        PopViewHelper sPop = new PopViewHelper(ReleaseActivity.this, tv_street, mStreetArray, PopViewHelper.TYPE_S);
+                        sPop.setOnPopItemClickListener(new PopViewHelper.OnPopItemClickListener() {
+                            @Override
+                            public void onPopItemClick(int type, String text, JSONArray array) {
+                                streetStr = text;
+                            }
+                        });
+                        sPop.show();
+                    }
+                    break;
+
                 case R.id.btn_photoAdd: // 图片添加被点击
                     String mCityStr = cityTv.getText().toString().trim();
                     String mAddressStr = address.getText().toString().trim();
@@ -240,7 +290,7 @@ public class ReleaseActivity extends SuperActivity {
                     PreferencesUtils.setStringPreferences(activity, "ZHKJ", "address", mAddressStr);
 
                     pickImage();
-                	break;
+                    break;
 
                 case R.id.btn_releaseAdd: // 信息发布被点击
                     nameStr = name.getText().toString().trim();
@@ -270,14 +320,15 @@ public class ReleaseActivity extends SuperActivity {
                         note.requestFocus();
                     } else if (noteStr.length() < 10) {
                         ToastUtil.showMessage(activity, "内容至少输入10字符！");
-                   } else if (photosPathList.size() == 0) {
-						ToastUtil.showMessage(activity, "至少要上传一张图片！");
-					} else {
+                    } else if (photosPathList.size() == 0) {
+                        ToastUtil.showMessage(activity, "至少要上传一张图片！");
+                    } else {
                         putAddData();
                     }
                     break;
 
-                default: break;
+                default:
+                    break;
             }
         }
     };
@@ -338,24 +389,24 @@ public class ReleaseActivity extends SuperActivity {
                 twoList = new ArrayList<String>();
 
                 if (arg2 == 0) {
-                	twoList.add("出租");
-                	twoList.add("出售");
+                    twoList.add("出租");
+                    twoList.add("出售");
                 } else if (arg2 == 1) {
-                	twoList.add("苹果");
-                	twoList.add("其他");
+                    twoList.add("苹果");
+                    twoList.add("其他");
                 } else if (arg2 == 2) {
-                	twoList.add("全职");
-                	twoList.add("兼职");
+                    twoList.add("全职");
+                    twoList.add("兼职");
                 } else if (arg2 == 3) {
-                	twoList.add("冰箱");
-                	twoList.add("洗衣机");
-                	twoList.add("电视");
-                	twoList.add("其他");
+                    twoList.add("冰箱");
+                    twoList.add("洗衣机");
+                    twoList.add("电视");
+                    twoList.add("其他");
                 } else if (arg2 == 4) {
-                	twoList.add("汽车");
-                	twoList.add("其他");
+                    twoList.add("汽车");
+                    twoList.add("其他");
                 } else if (arg2 == 5) {
-                	twoList.add("二手交易");
+                    twoList.add("二手交易");
                 }
                 twoAdapter = new MyspinnerAdapter(ReleaseActivity.this, twoList);
                 typeTwo.setText((CharSequence) twoAdapter.getItem(0).toString());
@@ -444,6 +495,7 @@ public class ReleaseActivity extends SuperActivity {
 
     /**
      * 拍照上传图片处理
+     *
      * @param photoFile
      */
     private void disposeCameraPhotos(final File photoFile, final int index) {
@@ -484,82 +536,85 @@ public class ReleaseActivity extends SuperActivity {
             photosPathList.add(tempPhotoFile);
             mAdapter.notifyDataSetChanged();
             if (photosImages.size() > 0) {
-            	photos.setVisibility(View.VISIBLE);
-			} else {
-				photos.setVisibility(View.GONE);
-			}
+                photos.setVisibility(View.VISIBLE);
+            } else {
+                photos.setVisibility(View.GONE);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-	/**
-	 * 提交发布数据
-	 */
-	private void putAddData() {
-		if (checkNet.checkNet()) {
+    /**
+     * 提交发布数据
+     */
+    private void putAddData() {
+        if (checkNet.checkNet()) {
             ToastUtil.showMessage(activity, "网络延迟，请等待一分钟");
 
-			RequestParams params = new RequestParams();
-			params.addBodyParameter("jsonpCallback", "jsonpCallback");
+            RequestParams params = new RequestParams();
+            params.addBodyParameter("jsonpCallback", "jsonpCallback");
 
-			AjaxParamsBean bean = new AjaxParamsBean();
-			bean.setUid(userId);
-			bean.setTitle(nameStr);
-			bean.setType(typeOne.getText().toString().trim());
-			bean.setType2(typeTwo.getText().toString().trim());
-			bean.setPrice(priceStr);
-			bean.setContact(userStr);
-			bean.setPhone(phoneStr);
-			bean.setAddress(addressStr);
-			bean.setContent(noteStr);
-			bean.setLongitude(MApplication.lon + "");
-			bean.setLatitude(MApplication.lat + "");
-			bean.setCity(cityStr);
+            AjaxParamsBean bean = new AjaxParamsBean();
+            bean.setUid(userId);
+            bean.setTitle(nameStr);
+            bean.setType(typeOne.getText().toString().trim());
+            bean.setType2(typeTwo.getText().toString().trim());
+            bean.setPrice(priceStr);
+            bean.setContact(userStr);
+            bean.setPhone(phoneStr);
+            bean.setAddress(addressStr);
+            bean.setContent(noteStr);
+            bean.setLongitude(MApplication.lon + "");
+            bean.setLatitude(MApplication.lat + "");
+            bean.setCity(cityStr);
+            bean.setDistrict(districtStr);
+            bean.setStreet(streetStr);
 
-			String json = JsonUtil.toJson(bean);
-			params.addBodyParameter("jsoninput", json);
-			params.addBodyParameter("uploadify", photosPathList);
+            String json = JsonUtil.toJson(bean);
+            params.addBodyParameter("jsoninput", json);
+            params.addBodyParameter("uploadify", photosPathList);
 
-			httpUtils.send(HttpRequest.HttpMethod.POST, addPath, params,
-					new RequestCallBack<String>() {
-						@Override
-						public void onStart() {
-							dialogUtil.showSubmitDialog(); // 显示加载Dialog
-						}
+            httpUtils.send(HttpRequest.HttpMethod.POST, addPath, params,
+                    new RequestCallBack<String>() {
+                        @Override
+                        public void onStart() {
+                            dialogUtil.showSubmitDialog(); // 显示加载Dialog
+                        }
 
-						@Override
-						public void onLoading(long total, long current, boolean isUploading) {
-						}
+                        @Override
+                        public void onLoading(long total, long current, boolean isUploading) {
+                        }
 
-						@Override
-						public void onSuccess(ResponseInfo<String> responseInfo) {
-							dialogUtil.closeDialog();// 加载成功关闭Dialog
-							try {
-								String jsonObject = responseInfo.result.substring(15, responseInfo.result.length()-2);
+                        @Override
+                        public void onSuccess(ResponseInfo<String> responseInfo) {
+                            dialogUtil.closeDialog();// 加载成功关闭Dialog
+                            try {
+                                String jsonObject = responseInfo.result.substring(15, responseInfo.result.length() - 2);
 
-								if ("1".equals(jsonObject)) {
-									ToastUtil.showMessage(activity, "该信息发布成功");
+                                if ("1".equals(jsonObject)) {
+                                    ToastUtil.showMessage(activity, "该信息发布成功");
                                     startActivity(MyAddActivity.class, null);
                                     overridePendingTransition(R.anim.left_in, R.anim.left_out);
                                     finishActivity();
-								} else {
-									ToastUtil.showMessage(activity, "该信息发布失败！");
-								}
-							} catch (Exception e) {
-								e.printStackTrace();
-							}
-						}
-						@Override
-						public void onFailure(HttpException error, String msg) {
-							dialogUtil.closeDialog(); // 加载失败关闭Dialog并提示
-							ToastUtil.showMessage(activity, "网络异常！");
-						}
-					});
-		} else {
-			dialogUtil.showNetworkDialog(); // 显示提示界面
-		}
-	}
+                                } else {
+                                    ToastUtil.showMessage(activity, "该信息发布失败！");
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(HttpException error, String msg) {
+                            dialogUtil.closeDialog(); // 加载失败关闭Dialog并提示
+                            ToastUtil.showMessage(activity, "网络异常！");
+                        }
+                    });
+        } else {
+            dialogUtil.showNetworkDialog(); // 显示提示界面
+        }
+    }
 
     /**
      * 获取返回参数
@@ -580,6 +635,10 @@ public class ReleaseActivity extends SuperActivity {
 
         if (1 == requestCode) { // 城市选择
             cityTv.setText(data.getExtras().getString("cityName"));
+            districtStr=null;
+            streetStr =null;
+            tv_district.setText("区域");
+            tv_street.setText("街道");
         } else if (CAMERA_PHOTOS_DATA == requestCode) { // 拍照/本地浏览
             if (data != null) {
                 mSelectPath = data.getStringArrayListExtra(MultiImageSelector.EXTRA_RESULT);

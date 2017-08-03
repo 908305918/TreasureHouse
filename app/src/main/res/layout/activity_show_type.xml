@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@color/main_bg"
+    android:background="@color/white"
     android:orientation="vertical">
 
     <include layout="@layout/view_head" />
@@ -58,12 +58,24 @@
                 android:textColor="#ff000000" />
         </LinearLayout>
 
-        <com.zizoy.treasurehouse.widget.expandtab.ExpandTabView
-            android:id="@+id/expandtab_view"
-            android:layout_width="fill_parent"
-            android:layout_height="40dp"
-            android:paddingLeft="10dip"
-            android:paddingRight="10dp" android:background="@color/white" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingLeft="18dp"
+            android:paddingRight="18dp"
+            android:weightSum="6.8">
+
+            <com.zizoy.treasurehouse.widget.expandtab.ExpandTabView
+                android:id="@+id/expandtab_view"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_weight="4.8"
+                android:background="@color/white"
+                android:paddingBottom="5dip"
+                android:paddingTop="5dip" />
+        </LinearLayout>
+
 
         <LinearLayout
             android:layout_width="fill_parent"
