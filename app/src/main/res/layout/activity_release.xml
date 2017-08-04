@@ -8,6 +8,7 @@
     <include layout="@layout/view_head_release" />
 
     <FrameLayout
+        android:id="@+id/main_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@null">

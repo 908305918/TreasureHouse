@@ -26,7 +26,6 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.treasurehouse.R;
 import com.zizoy.treasurehouse.adapter.MCameraAdapter;
@@ -39,6 +38,7 @@ import com.zizoy.treasurehouse.util.CityTool;
 import com.zizoy.treasurehouse.util.ClearEditText;
 import com.zizoy.treasurehouse.util.GridViewUtil;
 import com.zizoy.treasurehouse.util.JsonUtil;
+import com.zizoy.treasurehouse.util.KeyboardUtil;
 import com.zizoy.treasurehouse.util.PopViewHelper;
 import com.zizoy.treasurehouse.util.PreferencesUtils;
 import com.zizoy.treasurehouse.util.ToastUtil;
@@ -63,6 +63,7 @@ import static com.zizoy.treasurehouse.api.MApplication.filePath;
  * @Description: 程序关于界面
  */
 public class ReleaseActivity extends SuperActivity {
+    private View mMainView;
     private TextView title;
     private LinearLayout backBtn;
     private LinearLayout gotoBtn;
@@ -132,6 +133,7 @@ public class ReleaseActivity extends SuperActivity {
     protected void initView() {
         super.initView();
 
+        mMainView = findViewById(R.id.main_view);
         title = (TextView) findViewById(R.id.tv_title);
         backBtn = (LinearLayout) findViewById(R.id.btn_back);
         gotoBtn = (LinearLayout) findViewById(R.id.btn_home);
@@ -151,6 +153,8 @@ public class ReleaseActivity extends SuperActivity {
         tv_district = (TextView) findViewById(R.id.tv_district);
         tv_street = (TextView) findViewById(R.id.tv_street);
 
+        KeyboardUtil.controlKeyboardLayout(mMainView, address);
+        KeyboardUtil.controlKeyboardLayout(mMainView, note);
     }
 
     @Override
@@ -635,8 +639,8 @@ public class ReleaseActivity extends SuperActivity {
 
         if (1 == requestCode) { // 城市选择
             cityTv.setText(data.getExtras().getString("cityName"));
-            districtStr=null;
-            streetStr =null;
+            districtStr = null;
+            streetStr = null;
             tv_district.setText("区域");
             tv_street.setText("街道");
         } else if (CAMERA_PHOTOS_DATA == requestCode) { // 拍照/本地浏览

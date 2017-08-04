@@ -151,7 +151,8 @@
             android:name="com.zizoy.treasurehouse.activity.ReleaseActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.NoTitleBar" />
+            android:theme="@android:style/Theme.NoTitleBar"
+            android:windowSoftInputMode="stateVisible|adjustPan" />
 
         <!-- 程序选择拍照界面 -->
         <activity
