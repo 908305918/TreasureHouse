@@ -8,11 +8,13 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,6 +27,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.example.treasurehouse.R;
@@ -64,6 +67,8 @@ import static com.zizoy.treasurehouse.api.MApplication.filePath;
  */
 public class ReleaseActivity extends SuperActivity {
     private View mMainView;
+    private ScrollView mScrollView;
+    private LinearLayout mContentView;
     private TextView title;
     private LinearLayout backBtn;
     private LinearLayout gotoBtn;
@@ -134,6 +139,8 @@ public class ReleaseActivity extends SuperActivity {
         super.initView();
 
         mMainView = findViewById(R.id.main_view);
+        mScrollView = (ScrollView) findViewById(R.id.scrollView);
+        mContentView = (LinearLayout) findViewById(R.id.ll_content);
         title = (TextView) findViewById(R.id.tv_title);
         backBtn = (LinearLayout) findViewById(R.id.btn_back);
         gotoBtn = (LinearLayout) findViewById(R.id.btn_home);
@@ -153,8 +160,6 @@ public class ReleaseActivity extends SuperActivity {
         tv_district = (TextView) findViewById(R.id.tv_district);
         tv_street = (TextView) findViewById(R.id.tv_street);
 
-        KeyboardUtil.controlKeyboardLayout(mMainView, address);
-        KeyboardUtil.controlKeyboardLayout(mMainView, note);
     }
 
     @Override
@@ -220,6 +225,43 @@ public class ReleaseActivity extends SuperActivity {
         addBtn.setOnClickListener(mBtnClick);
         tv_district.setOnClickListener(mBtnClick);
         tv_street.setOnClickListener(mBtnClick);
+
+        address.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    scrollToBottom(mScrollView, mContentView);
+                }
+            }
+        });
+        note.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            private KeyboardUtil.OnKeyGlobalLayoutListener listener = new KeyboardUtil.OnKeyGlobalLayoutListener(mMainView, note);
+
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    mMainView.getViewTreeObserver().addOnGlobalLayoutListener(listener);
+                } else {
+                    mMainView.getViewTreeObserver().removeGlobalOnLayoutListener(listener);
+                }
+            }
+        });
+    }
+
+    public void scrollToBottom(final View scroll, final View inner) {
+        Handler mHandler = new Handler();
+        mHandler.post(new Runnable() {
+            public void run() {
+                if (scroll == null || inner == null) {
+                    return;
+                }
+                int offset = inner.getMeasuredHeight() - scroll.getHeight();
+                if (offset < 0) {
+                    offset = 0;
+                }
+                scroll.scrollTo(0, offset);
+            }
+        });
     }
 
     /**
