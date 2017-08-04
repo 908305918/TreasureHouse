@@ -26,6 +26,8 @@ public class ClearEditText extends AppCompatEditText implements OnFocusChangeLis
      */
     private Drawable mClearDrawable;
 
+    private boolean isClearVisible = false;
+
     private OnFocusChangeListener l;
 
     public ClearEditText(Context context) {
@@ -100,8 +102,12 @@ public class ClearEditText extends AppCompatEditText implements OnFocusChangeLis
      * @param visible
      */
     protected void setClearIconVisible(boolean visible) {
-        Drawable right = visible ? mClearDrawable : null;
-        setCompoundDrawables(getCompoundDrawables()[0], getCompoundDrawables()[1], right, getCompoundDrawables()[3]);
+        if (visible != isClearVisible) {
+            isClearVisible = visible;
+            Drawable right = visible ? mClearDrawable : null;
+            setCompoundDrawables(getCompoundDrawables()[0], getCompoundDrawables()[1], right, getCompoundDrawables()[3]);
+        }
+
     }
 
     /**
