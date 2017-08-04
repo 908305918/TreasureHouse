@@ -41,6 +41,23 @@
                 android:singleLine="true"
                 android:textColorHint="#ff696b"
                 android:textSize="15sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingBottom="5dip"
+            android:paddingLeft="18dp"
+            android:paddingRight="18dp"
+            android:weightSum="6.8">
+
+            <com.zizoy.treasurehouse.widget.expandtab.ExpandTabView
+                android:id="@+id/expandtab_view"
+                android:layout_width="0dp"
+                android:layout_height="32dp"
+                android:layout_weight="5"
+                android:background="@color/white" />
 
             <Button
                 android:id="@+id/btn_Search"
@@ -56,24 +73,6 @@
                 android:paddingRight="5dp"
                 android:text="搜索"
                 android:textColor="#ff000000" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingLeft="18dp"
-            android:paddingRight="18dp"
-            android:weightSum="6.8">
-
-            <com.zizoy.treasurehouse.widget.expandtab.ExpandTabView
-                android:id="@+id/expandtab_view"
-                android:layout_width="0dp"
-                android:layout_height="40dp"
-                android:layout_weight="4.8"
-                android:background="@color/white"
-                android:paddingBottom="5dip"
-                android:paddingTop="5dip" />
         </LinearLayout>
 
 
