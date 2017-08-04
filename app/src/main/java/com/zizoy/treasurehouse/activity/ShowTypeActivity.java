@@ -297,7 +297,9 @@ public class ShowTypeActivity extends SuperActivity {
                     break;
 
                 case R.id.btn_Search: // 信息搜索被点击
-                    showWindow(searchBtn, searchBtn);
+                    if(!mTabView.onPressBack()){
+                        showWindow(searchBtn, searchBtn);
+                    }
                     break;
 
                 default:
