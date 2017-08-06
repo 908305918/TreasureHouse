@@ -186,6 +186,7 @@ public class ShowTypeActivity extends SuperActivity {
         String[] address = showText.split("-");
         if (address.length == 1) {
             districtStr = address[0].contains("全") ? "" : address[0];
+            streetStr = "";
         }
         if (address.length == 2) {
             districtStr = address[0].contains("全") ? "" : address[0];
@@ -406,7 +407,6 @@ public class ShowTypeActivity extends SuperActivity {
             params.addBodyParameter("jsonpCallback", "jsonpCallback");
 
             AjaxParamsBean bean = new AjaxParamsBean();
-            bean.setKey(keyStr);
             bean.setType(typeStr);
             bean.setType2(typeTwoStr);
             bean.setPageno(String.valueOf(curPage));
@@ -416,6 +416,10 @@ public class ShowTypeActivity extends SuperActivity {
                 bean.setDistrict(districtStr);
                 bean.setStreet(streetStr);
                 bean.setKey("");
+            }else {
+                bean.setDistrict("");
+                bean.setStreet("");
+                bean.setKey(keyStr);
             }
             String json = JsonUtil.toJson(bean);
             params.addBodyParameter("jsoninput", json);

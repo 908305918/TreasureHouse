@@ -643,6 +643,8 @@ public class ReleaseActivity extends SuperActivity {
                                     startActivity(MyAddActivity.class, null);
                                     overridePendingTransition(R.anim.left_in, R.anim.left_out);
                                     finishActivity();
+                                } else if ("2".equals(jsonObject)) {
+                                    ToastUtil.showMessage(activity, "请不要重复发帖！");
                                 } else {
                                     ToastUtil.showMessage(activity, "该信息发布失败！");
                                 }
