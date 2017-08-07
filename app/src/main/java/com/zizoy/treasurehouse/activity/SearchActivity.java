@@ -194,6 +194,8 @@ public class SearchActivity extends SuperActivity {
 			bean.setPagesize("100");
 			bean.setLongitude(MApplication.lon + "");
 			bean.setLatitude(MApplication.lat + "");
+            bean.setDistrict("");
+            bean.setStreet("");
 
 			String json = JsonUtil.toJson(bean);
 			params.addBodyParameter("jsoninput", json);
