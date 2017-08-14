@@ -195,6 +195,7 @@ public class ShowTypeActivity extends SuperActivity {
         //Toast.makeText(ShowTypeActivity.this, districtStr + "==" + streetStr, Toast.LENGTH_SHORT).show();
         curPage = 1;
         listType = 1;
+        isChooseAddr = true;
         getShowDate("", searchBtn.getText().toString().trim(), true, true);
     }
 
