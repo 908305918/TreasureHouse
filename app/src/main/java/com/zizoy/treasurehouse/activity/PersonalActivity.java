@@ -49,6 +49,8 @@ public class PersonalActivity extends SuperActivity implements Callback {
     private static final int MSG_AUTH_ERROR = 2;
     private static final int MSG_AUTH_COMPLETE = 3;
 
+    private String from;
+
     private String loginPath = MApplication.serverURL + "user/loginUser";
 
     @Override
@@ -70,6 +72,8 @@ public class PersonalActivity extends SuperActivity implements Callback {
         title = (TextView) findViewById(R.id.tv_title);
         backBtn = (LinearLayout) findViewById(R.id.btn_back);
         qqBtn = (ImageView) findViewById(R.id.img_qq);
+
+        from = getIntent().getStringExtra("from");
     }
 
     @Override
@@ -244,7 +248,9 @@ public class PersonalActivity extends SuperActivity implements Callback {
                                 PreferencesUtils.setStringPreferences(activity, "ZHKJ", "userName", login.getUsername());
 
                                 ToastUtil.showMessage(activity, "该用户登陆成功");
-                                startActivity(MyAddActivity.class, null);
+                                if(!"message".equals(from)){
+                                    startActivity(MyAddActivity.class, null);
+                                }
                                 overridePendingTransition(R.anim.left_in, R.anim.left_out);
                                 finishActivity();
                             } catch (Exception e) {

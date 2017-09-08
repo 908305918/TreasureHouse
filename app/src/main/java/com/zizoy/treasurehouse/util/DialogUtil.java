@@ -78,7 +78,7 @@ public class DialogUtil {
 	/**
 	 * 显示对话框
 	 */
-	private void showDialog(Context context, String msg, boolean cancelable) {
+	public void showDialog(Context context, String msg, boolean cancelable) {
 		LayoutInflater inflater = LayoutInflater.from(context);
 		View view = inflater.inflate(R.layout.view_loading_dialog, new LinearLayout(context),false);
 		LinearLayout layout = (LinearLayout) view.findViewById(R.id.dialogView);
