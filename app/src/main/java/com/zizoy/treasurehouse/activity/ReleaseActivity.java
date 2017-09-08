@@ -361,6 +361,10 @@ public class ReleaseActivity extends SuperActivity {
                         phone.requestFocus();
                     } else if ("".equals(cityStr) || cityStr == null) {
                         ToastUtil.showMessage(activity, "请选择对应的城市！");
+                    } else if (TextUtils.isEmpty(districtStr)) {
+                        ToastUtil.showMessage(activity, "请选择对应的区域！");
+                    } else if (TextUtils.isEmpty(streetStr)) {
+                        ToastUtil.showMessage(activity, "请选择对应的街道！");
                     } else if ("".equals(noteStr) || noteStr == null) {
                         ToastUtil.showMessage(activity, "内容不能为空！");
                         note.requestFocus();
