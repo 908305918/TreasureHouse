@@ -24,7 +24,11 @@ import org.json.JSONObject;
 
 public class ReportModel {
 
+
     public static void report(final Context context, String pid) {
+        report(context,pid,null);
+    }
+    public static void report(final Context context, String pid,final OnReportCallback callback) {
         String uid = PreferencesUtils.getStringPreference(context, "ZHKJ", "userId", "");
         if (TextUtils.isEmpty(uid)) {
             Intent intent = new Intent(context, PersonalActivity.class);
@@ -52,6 +56,9 @@ public class ReportModel {
                     String code = jsonObj.optString("resultCode");
                     if ("1".equals(code)) {
                         ToastUtil.showMessage(context, "举报成功！");
+                        if (callback != null) {
+                            callback.onReportSuccess();
+                        }
                     }else if("0".equals(code)){
                         ToastUtil.showMessage(context, "不能重复举报！");
                     } else {
@@ -69,5 +76,9 @@ public class ReportModel {
             }
 
         });
+    }
+
+    public interface OnReportCallback {
+        void onReportSuccess();
     }
 }

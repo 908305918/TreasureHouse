@@ -77,7 +77,13 @@ public class ShowTypeAdapter extends SuperBaseAdapter<Map<String, String>> {
         jubao.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ReportModel.report(context, data.get("pid"));
+                ReportModel.report(context, data.get("pid"),new ReportModel.OnReportCallback() {
+                    @Override
+                    public void onReportSuccess() {
+                        listData.remove(data);
+                        ShowTypeAdapter.this.notifyDataSetChanged();
+                    }
+                });
             }
         });
     }

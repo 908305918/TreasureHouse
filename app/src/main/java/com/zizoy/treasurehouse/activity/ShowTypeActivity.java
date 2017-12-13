@@ -58,6 +58,8 @@ import java.util.Map;
  * @Description: 程序警报界面
  */
 public class ShowTypeActivity extends SuperActivity {
+
+    public static ShowTypeActivity activity;
     private TextView title;
     private LinearLayout backBtn;
     private LinearLayout gotoBtn;
@@ -93,6 +95,7 @@ public class ShowTypeActivity extends SuperActivity {
 
     private List<Map<String, String>> dataList = new ArrayList<>();
     private ArrayList<String> listOne, listTwo, listThree, listFour, listFive, listSix, listTemp;
+    private Map<String,String> mClickItem;
 
     // 列表接口地址
     private String showPath = MApplication.serverURL + "post/listPostByKey";
@@ -105,6 +108,8 @@ public class ShowTypeActivity extends SuperActivity {
     @Override
     protected void initData() {
         super.initData();
+        activity = this;
+
 
         Bundle bundle = getIntent().getExtras();
 
@@ -320,6 +325,7 @@ public class ShowTypeActivity extends SuperActivity {
             Bundle bundle = new Bundle();
             Map<String, String> map = mAdapter.getListData().get((int) id);
             bundle.putString("id", map.get("pid"));
+            mClickItem = map;
 
             startActivity(ShowDetailActivity.class, bundle);
             overridePendingTransition(R.anim.left_in, R.anim.left_out);
@@ -475,10 +481,10 @@ public class ShowTypeActivity extends SuperActivity {
                                 }
                                 listType = 0;
                             }
-                            if (datas.size() < totalPage) {
+                            if (curPage <= totalPage) {
                                 showList.setPullLoadEnable(true);
                             } else {
-                                showList.setPullLoadEnable(false);
+                                showList.setPullLoadEnable(true);
                             }
                         } else {
                             ToastUtil.showMessage(activity, "已经到底啦");
@@ -514,7 +520,10 @@ public class ShowTypeActivity extends SuperActivity {
             dialogUtil.showNetworkDialog(); // 显示提示界面
         }
     }
-
+    public void deleteReportItem(){
+        dataList.remove(mClickItem);
+        mAdapter.notifyDataSetChanged();
+    }
     /**
      * 按系统键返回
      */
@@ -531,5 +540,11 @@ public class ShowTypeActivity extends SuperActivity {
         if (!mTabView.onPressBack()) {
             super.activityFinish();
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        activity = null;
     }
 }

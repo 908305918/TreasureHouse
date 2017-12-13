@@ -12,7 +12,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
-
+import android.content.Context;
+import android.telephony.TelephonyManager;
 import com.example.treasurehouse.R;
 import com.zizoy.treasurehouse.api.MApplication;
 import com.zizoy.treasurehouse.base.SuperActivity;
@@ -102,7 +103,7 @@ public class WelcomeActivity extends SuperActivity {
         super.initCodeLogic();
 
         goUpdate(); // 软件更新
-
+        statistics();
         // 开启百度定位
         ((MApplication) getApplication()).startLocate();
 
@@ -273,5 +274,32 @@ public class WelcomeActivity extends SuperActivity {
         } else {
             showNetworkDialog(); // 显示提示窗口
         }
+    }
+
+    /**
+     * 统计
+     */
+    private void statistics() {
+      String url = MApplication.serverURL + "/count/activationCount";
+      TelephonyManager tm = ((TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE));
+      RequestParams params = new RequestParams();
+      params.addBodyParameter("type", "0");
+      params.addBodyParameter("machineFlag", tm.getDeviceId());
+      MApplication.getHttpUtils().send(HttpRequest.HttpMethod.POST, url, params, new RequestCallBack<String>() {
+          @Override
+          public void onStart() {
+              super.onStart();
+          }
+
+          @Override
+          public void onSuccess(ResponseInfo<String> responseInfo) {
+
+          }
+
+          @Override
+          public void onFailure(HttpException e, String s) {
+
+          }
+      });
     }
 }

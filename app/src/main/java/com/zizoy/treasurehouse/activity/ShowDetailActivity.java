@@ -144,7 +144,12 @@ public class ShowDetailActivity extends SuperActivity {
                     callPhone(phone.getText().toString().trim());
                     break;
                 case R.id.btn_goto:
-                    ReportModel.report(ShowDetailActivity.this,idStr);
+                    ReportModel.report(ShowDetailActivity.this, idStr, new ReportModel.OnReportCallback() {
+                        @Override
+                        public void onReportSuccess() {
+                            ShowTypeActivity.activity.deleteReportItem();
+                        }
+                    });
                     break;
                 default:
                     break;
@@ -232,13 +237,8 @@ public class ShowDetailActivity extends SuperActivity {
                                 if (photoArray != null && photoArray.length() > 0) {
                                     for (int i = 0; i < photoArray.length(); i++) {
                                         Map<String, String> map = new HashMap<>();
-
-                                        String photoPath = MApplication.serverURL + "upload/";
-                                        String suffix = photoArray.getJSONObject(i).getJSONObject("attachment").getString("suffix");
-                                        String photoUrl = photoArray.getJSONObject(i).getJSONObject("attachment").getString("name") + "." + suffix;
-                                        photoPath = photoPath + photoUrl;
-                                        map.put("url", photoArray.getJSONObject(i).getJSONObject("attachment").getString("fullpath"));
-
+                                        String photoPath = photoArray.getJSONObject(i).getJSONObject("attachment").getString("fullpath");
+                                        map.put("url", photoPath);
                                         photosData.add(map);
                                     }
                                     mGallery.setAdapter(new BannerAdapter(activity, photosData));
