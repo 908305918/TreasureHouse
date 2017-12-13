@@ -237,7 +237,7 @@ public class ShowDetailActivity extends SuperActivity {
                                         String suffix = photoArray.getJSONObject(i).getJSONObject("attachment").getString("suffix");
                                         String photoUrl = photoArray.getJSONObject(i).getJSONObject("attachment").getString("name") + "." + suffix;
                                         photoPath = photoPath + photoUrl;
-                                        map.put("url", photoPath);
+                                        map.put("url", photoArray.getJSONObject(i).getJSONObject("attachment").getString("fullpath"));
 
                                         photosData.add(map);
                                     }
