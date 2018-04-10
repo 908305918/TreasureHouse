@@ -44,7 +44,8 @@ public class MApplication extends Application {
 
 //	public static String serverURL = "http://192.168.23.1:8080/cbg/"; // 测试服务器地址
 //	public static String serverURL = "http://118.89.222.210:8080/cbg/"; // 正式服务器地址
-	public static String serverURL = "http://211.159.169.193:8080/cbg/"; // 正式服务器地址
+//	public static String serverURL = "http://211.159.169.193:8080/cbg/"; // 正式服务器地址
+	public static String serverURL = "http://140.143.38.179/cbg/"; // 正式服务器地址
 	
 	/**
 	 * 单例获得网络请求工具类
