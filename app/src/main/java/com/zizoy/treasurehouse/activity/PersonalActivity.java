@@ -240,7 +240,7 @@ public class PersonalActivity extends SuperActivity implements Callback {
                         public void onSuccess(ResponseInfo<String> responseInfo) {
                             dialogUtil.closeDialog();// 加载成功关闭Dialog
                             try {
-                                String jsonObject = responseInfo.result.substring(15, responseInfo.result.length() - 1);
+                                String jsonObject = responseInfo.result.substring(14, responseInfo.result.length() - 1);
 
                                 LoginGetBean login = JsonUtil.fromJson(jsonObject, LoginGetBean.class);
 
