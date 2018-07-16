@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
 import com.example.treasurehouse.R;
+import com.tencent.bugly.crashreport.CrashReport;
 import com.zizoy.treasurehouse.api.MApplication;
 import com.zizoy.treasurehouse.base.SuperActivity;
 import com.zizoy.treasurehouse.util.ClearEditText;
